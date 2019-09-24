@@ -1,0 +1,241 @@
+Java 基础知识：
+
+1. 变量
+Questions and Exercises
+Questions：
+1.术语“实例变量”是__非静态成员变量_的另一个名称。
+2.术语“类变量”是_静态成员变量__的另一个名称。
+3.局部变量存储临时状态; 它在__方法_内声明。
+4.在方法的左右括号内声明的变量称为__参数__。
+5.Java编程语言支持的八种原始数据类型是什么？
+byte short int long float double boolean char
+6.字符串由类__java.lang.String_表示。
+7._array__是一个容器对象，它包含固定数量的单一类型的值。
+
+
+2.运算符
+Questions and Exercises
+Questions：
+1.请考虑以下代码段。
+arrayOfInts [j]> arrayOfInts [j + 1]
+代码包含哪些运算符？
+	A:代码中包含的运算符有 > +
+2.请考虑以下代码段。
+    int i = 10;
+    int n = i ++％5;
+    a.代码执行后的值i和值n是什么？
+		A: i的值为11， n为0  （int n = i ++ %5 表达式内不自增，i保持10 ，出了表达式才自增，所以n=0）
+    b.最终值的i和n，如果不是使用后缀增量运算符（i++），使用前缀版本（++i)）？
+		A：i为11，n为1 （先自增再做余）
+3.要反转a的值，boolean您将使用哪个运算符？
+	A：可以使用逻辑补语运算符 ！ （反转运算符）
+4.哪个运算符用于比较两个值，=或==？
+	A：运算符 == 可用于比较，= 用于赋值
+5.解释以下代码示例： result = someCondition ? value1 : value2;
+	A：三元运算符  如果result = someCondition是true的话，赋值value1；是false的话赋值value2
+
+Exercises:
+1.使用复合运算符更改以下程序：
+	class ArithmeticDemo {
+
+		 public static void main (String[] args){
+			  
+			  int result = 1 + 2; // result is now 3
+			  System.out.println(result);
+
+			  result = result - 1; // result is now 2
+			  System.out.println(result);
+
+			  result = result * 2; // result is now 4
+			  System.out.println(result);
+
+			  result = result / 2; // result is now 2
+			  System.out.println(result);
+
+			  result = result + 8; // result is now 10
+			  result = result % 7; // result is now 3
+			  System.out.println(result);
+		 }
+	}
+
+
+	A：
+	class ArithmeticDemo {
+
+		public static void main (String[] args){
+			int result = 3;
+			System.out.println(result);
+
+			result -= 1; // result = 2
+			System.out.println(result);
+
+			result *= 2; // result = 4
+			System.out.println(result);
+
+			result /= 2; // result = 2
+			System.out.println(result);
+
+			result += 8; // result = 10
+			result %= 7; // result = 3
+			System.out.println(result);
+
+		}
+	}
+
+2.在下面的程序中，解释为什么连续两次打印值“6”：
+	class PrePostDemo {
+		public static void main(String[] args){
+			int i = 3;
+			i++;
+			System.out.println(i);    // "4"
+			++i;                     
+			System.out.println(i);    // "5"
+			System.out.println(++i);  // "6"
+			System.out.println(i++);  // "6"
+			System.out.println(i);    // "7"
+		}
+	}
+	A：++i 先自增再输出；下一个语句，先输出i再自增。
+
+3.表达式
+Questions：
+1.运算符可用于构建计算值的_表达式__。
+2.表达式是_statements__的核心组成部分。
+3.语句可分为_代码块__。
+4.以下代码段是__复合_表达式的示例。
+ 1 * 2 * 3
+5.语句大致相当于自然语言中的句子，但不是以句号结尾，而是以_分号__结尾。
+6.代码块是平衡_括号__之间的一组零个或多个语句，可以在允许单个语句的任何地方使用。
+
+Exercises：
+确定以下类型的表达式语句：
+	aValue = 8933.234;   //赋值语句
+	aValue++;            //自增语句
+	System.out.println("Hello World!");    //方法调用语句
+	Bicycle myBike = new Bicycle();       //对象创建语句
+
+
+4.流程控制语句
+Questions：
+1.Java编程语言支持的最基本的控制流语句是_if-then__语句。
+2.__switch_语句允许任意数量的可能执行路径。
+3.__do-while_语句类似于while语句，但在循环的_底部__处计算其表达式。
+4.你如何使用该for语句编写无限循环？
+	for(；；){
+	}
+5.你如何使用该while语句编写无限循环？
+	while(true){
+	}
+
+Exercises：
+1.请思考一下代码段：
+	if (aNumber >= 0)
+		if (aNumber == 0)
+			System.out.println("first string");
+	else System.out.println("second string");
+	System.out.println("third string");
+	a.如果aNumber是3，您认为代码会产生什么输出？
+	A: second string
+	   third string
+	b.编写包含先前代码片段的测试程序; make aNumber3.程序的输出是什么？这是你预测的吗？
+	解释为什么输出是这样的; 换句话说，代码片段的控制流程是什么？
+	A: 3 > 0 但是不等于0 ，所以输出 second string；固定输出third string
+	c.仅使用空格和换行符，重新格式化代码段以使控件流更易于理解。
+	A：
+		if (aNumber >= 0)
+		if (aNumber == 0)
+			System.out.println("first string");
+		else
+			System.out.println("second string");
+
+		System.out.println("third string");
+	d.使用大括号{ and }来进一步阐明代码。
+	if (aNumber >= 0) {
+		if (aNumber == 0) {
+			System.out.println("first string");
+		} else {
+			System.out.println("second string");
+		}
+	}
+	System.out.println("third string");
+	
+	
+	
+类和对象：
+Questions：
+1.考虑下述类：
+		public class IdentifyMyParts {
+		public static int x = 7; 
+		public int y = 3; 
+	}
+	a.什么是类变量？
+	A： x为类变量
+	b.什么是实例变量？
+	：  y为实例变量
+	c.以下代码的输出是什么：
+	IdentifyMyParts a = new IdentifyMyParts();
+	IdentifyMyParts b = new IdentifyMyParts();
+	a.y = 5;
+	b.y = 6;
+	a.x = 1;
+	b.x = 2;
+	System.out.println("a.y = " + a.y);
+	System.out.println("b.y = " + b.y);
+	System.out.println("a.x = " + a.x);
+	System.out.println("b.x = " + b.x);
+	System.out.println("IdentifyMyParts.x = " + IdentifyMyParts.x);
+	
+	A：输出：
+	    a.y = 5 
+		b.y = 6 
+		a.x = 2 
+		b.x = 2
+		IdentifyMyParts.x = 2
+		
+		x为类变量，定义为public static int, 所以x会引用上次分配的值。
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
