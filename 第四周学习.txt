@@ -1,0 +1,276 @@
+接口和继承：
+Questions：
+
+1.实现java.lang.CharSequence接口的类必须实现什么方法？
+	A：CharSequence是一个描述字符串结构的接口，必须实现的方法有：charAt(获取指定索引的字符)，
+	length(获取字符串的长度)，subSequence(截取部分字符串)和toString(返回字符串)
+	
+2.下面接口存在什么问题
+	public interface SomethingIsWrong {
+		void aMethod(int aValue) {
+			System.out.println("Hi Mom");
+		}
+	}
+	A：方法的实现不合理，应当只有默认方法和静态方法的实现。
+	
+3.修复问题2中的问题
+	public interface SomethingIsWrong {
+		void aMethod(int aValue);
+	}
+	
+4.下面接口有效吗
+	public interface Marker {
+	}
+	A：可以这么写，接口可以无需任何特定的方法实现。
+	
+Exercises：
+1.编写一个类，该类实现CharSequence在java.lang包中找到的接口。并以字符串返回。
+从本书中选择其中一个句子作为数据。编写一个小的main方法来测试您的课程；确保调用所有四个方法。
+	A：
+	public class CharSequenceTest implements CharSequence {
+		private String s;
+
+		public CharSequenceTest(String s) {
+			this.s = s;
+		}
+
+		private int fromEnd(int i) {
+			return s.length() - 1 - i;
+		}
+
+		public char charAt(int i) {
+			if ((i < 0) || (i >= s.length())) {
+				throw new StringIndexOutOfBoundsException(i);
+			}
+			return s.charAt(fromEnd(i));
+		}
+
+		public int length() {
+			return s.length();
+		}
+
+		public CharSequence subSequence(int start, int end) {
+			if (start < 0) {
+				throw new StringIndexOutOfBoundsException(start);
+			}
+			if (end > s.length()) {
+				throw new StringIndexOutOfBoundsException(end);
+			}
+			if (start > end) {
+				throw new StringIndexOutOfBoundsException(start - end);
+			}
+			StringBuilder sub = 
+				new StringBuilder(s.subSequence(fromEnd(end), fromEnd(start)));
+			return sub.reverse();
+		}
+
+		public String toString() {
+			StringBuilder s = new StringBuilder(this.s);
+			return s.reverse().toString();
+		}
+
+		private static int random(int max) {
+			return (int) Math.round(Math.random() * (max+1));
+		}
+
+		public static void main(String[] args) {
+			CharSequenceDemo s =
+				new CharSequenceTest("Demo for test");
+
+			for (int i = 0; i < s.length(); i++) {
+				System.out.print(s.charAt(i));
+			}
+			
+			System.out.println("");
+
+			int start = random(s.length() - 1);
+			int end = random(s.length() - 1 - start) + start;
+			System.out.println(s.subSequence(start, end));
+			System.out.println(s);
+
+		}
+	}
+	
+2.编写了一个时间服务器，该服务器定期将当前日期和时间通知给其客户端。
+编写服务器可以用来在其客户端上实施特定协议的接口。
+	A:
+	import java.time.*; 
+ 
+	public interface TimeClient {
+		void setTime(int hour, int minute, int second);
+		void setDate(int day, int month, int year);
+		void setDateAndTime(int day, int month, int year,
+								   int hour, int minute, int second);
+		LocalDateTime getLocalDateTime();
+	}
+	
+	
+Questions:
+1.请思考以下两个类：
+	public class ClassA {
+		public void methodOne(int i) {
+		}
+		public void methodTwo(int i) {
+		}
+		public static void methodThree(int i) {
+		}
+		public static void methodFour(int i) {
+		}
+	}
+
+	public class ClassB extends ClassA {
+		public static void methodOne(int i) {
+		}
+		public void methodTwo(int i) {
+		}
+		public void methodThree(int i) {
+		}
+		public static void methodFour(int i) {
+		}
+	}
+1a.哪个方法将覆盖父类中的方法？	
+	A：methodTwo
+1b.哪个方法在父类中隐藏了一个方法？
+	A：methodFour,静态方法有与父类中同名同参的方法，则父类的方法将被隐藏。
+1c.其他方法有什么作用？
+	A：编译时会报错
+	
+2. 前面写的Card,Deck以及DisplayDeck类，这些类应该重写哪些方法
+	A：应该重写equals，hashCode和toString方法
+	
+Exercises：
+	1.实现问题2中方法
+	A；
+	public class Card {
+		private int rank;
+		private int suit;
+
+		public final static int DIAMONDS = 1;
+		public final static int CLUBS = 2;
+		public final static int HEARTS = 3;
+		public final static int SPADES = 4;
+
+		public final static int ACE = 1;
+		public final static int DEUCE = 2;
+		public final static int THREE = 3;
+		public final static int FOUR = 4;
+		public final static int FIVE = 5;
+		public final static int SIX = 6;
+		public final static int SEVEN = 7;
+		public final static int EIGHT = 8;
+		public final static int NINE = 9;
+		public final static int TEN = 10;
+		public final static int JACK = 11;
+		public final static int QUEEN = 12;
+		public final static int KING = 13;
+
+		public Card(int rank, int suit) {
+			this.rank = rank;
+			this.suit = suit;
+		}
+
+		public int getSuit() {
+			return suit;
+		}
+
+		public int getRank() {
+			return rank;
+		}
+
+		public static boolean isValidRank(int rank) {
+			return ACE <= rank && rank <= KING;
+		}
+
+		public static boolean isValidSuit(int suit) {
+			return DIAMONDS <= suit && suit <= SPADES;
+		}
+
+		public boolean equals(Object obj) {
+			if (obj instanceof Card) {
+				if (((Card)obj).getRank() == this.rank &&
+					((Card)obj).getSuit() == this.suit) {
+					return true;
+				} else {
+					return false;
+				}
+			} else {
+				return false;
+			}
+		}
+
+		public int hashCode() {
+			return ((suit-1)*13)+rank;
+		}
+
+		public String toString() {
+			return rankToString(this.rank) + " of "
+				   + suitToString(this.suit);
+		}
+
+		public static String rankToString(int rank) {
+			switch (rank) {
+				case ACE:
+					return "Ace";
+				case DEUCE:
+					return "Deuce";
+				case THREE:
+					return "Three";
+				case FOUR: 
+					return "Four";
+				case FIVE:
+					return "Five";
+				case SIX:
+					return "Six";
+				case SEVEN:
+					return "Seven";
+				case EIGHT:
+					return "Eight";
+				case NINE:
+					return "Nine";
+				case TEN:
+					return "Ten";
+				case JACK:
+					return "Jack";
+				case QUEEN:
+					return "Queen";
+				case KING:
+					return "King";
+				default:
+					throw new IllegalArgumentException("Invalid rank " + rank);
+			}
+		}
+
+		public static String suitToString(int suit) {
+			String result = "";
+			switch (suit) {
+				case DIAMONDS:
+					return "Diamonds";
+				case CLUBS:
+					return "Clubs";
+				case HEARTS:
+					return "Hearts";
+				case SPADES:
+					return "Spades";
+				default:
+					throw new IllegalArgumentException("Invalid suit " + suit);
+			}
+		}
+
+		public static void main(String[] args) {
+			new Card(ACE, DIAMONDS);
+			new Card(KING, SPADES);
+		}
+	}
+	
+	
+	
+	
+	
+
+
+
+
+
+
+
+
