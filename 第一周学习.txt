@@ -1,0 +1,90 @@
+第一周：
+问题与练习：面向对象编程的概念
+
+问题：
+1.真实世界的对象包含_状态_和__行为_。
+2.软件对象的状态存储在_变量_中。
+3.软件对象的行为通过__方法_暴露。
+4.隐藏来自外部世界的内部数据，并且仅通过公开暴露的方法访问它被称为数据_封装__。
+5.软件对象的蓝图称为_类__。
+6.常见行为可以在_父类__中定义，并使用_extends__关键字继承到_子类__。
+7.没有实现的方法集合称为_接口__。
+8.按功能组织类和接口命名的空间称为_包__。
+9.API这个词代表_应用程序编程接口__。
+
+
+练习：
+1.为观察到的每个真实世界对象创建新类。
+class Washer{
+	
+	String name = haier;
+	int power = 1000;
+	int powerConsumption = 1;
+	
+	void buyNewWasher(String name){
+		name = midea;
+	}	
+	
+	void changePower(int newValue){
+		power = newValue;
+	}
+	
+	void powerConsumptionChange(int increment){
+		powerConsumption = powerConsumption + increment;
+	}
+	
+	void printStates(){
+		System.out.println("washerName:" +
+			name + "washerPower:" +
+			power + "powerConsumption:" + powerConsumption);
+	}
+	
+}
+
+2.对于您在上面创建的新类，创建一个定义其行为的接口，然后要求您的类实现它。省略一两种方法
+并尝试编译。错误是什么样的？
+
+interface Washer{
+
+	void buyNewWasher(String name);
+	
+	void changePower(int newValue);
+	
+	void powerConsumptionChange(int increment);
+	
+}
+
+class mideaWasher implements Washer{
+
+	String name = haier;
+	int power = 1000;
+	int powerConsumption = 1;
+	
+	void buyNewWasher(String name){
+		name = midea;
+	}	
+	
+	void changePower(int newValue){
+		power = newValue;
+	}
+	
+	void powerConsumptionChange(int increment){
+		powerConsumption = powerConsumption + increment;
+	}
+	
+	void printStates(){
+		System.out.println("washerName:" +
+			name + "washerPower:" +
+			power + "powerConsumption:" + powerConsumption);
+	}
+	
+}
+
+
+
+
+
+
+
+
+
