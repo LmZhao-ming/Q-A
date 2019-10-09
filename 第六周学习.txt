@@ -1,0 +1,457 @@
+泛型：
+Answer to Questions and Exercises：
+1.编写一个通用方法来计算集合中具有特定属性（例如，奇数整数，质数，回文数）的元素数。
+A：
+	public final class Algorithm {
+		public static <T> int countIf(Collection<T> c, UnaryPredicate<T> p) {
+			int count = 0;
+			for (T elem : c)
+				if (p.test(elem))
+					++count;
+			return count;
+		}
+	}
+	
+	通用UnaryPredicate接口的定义如下：
+	
+	public interface UnaryPredicate<T> {
+		public boolean test(T obj);
+	}
+	
+	对整数列表中的奇数整数进行计数：
+	
+	import java.util.*;
+
+	class OddPredicate implements UnaryPredicate<Integer> {
+		public boolean test(Integer i) { return i % 2 != 0; }
+	}
+
+	public class Test {
+		public static void main(String[] args) {
+			Collection<Integer> c = Arrays.asList(1, 2, 3, 4);
+			int count = Algorithm.countIf(c, new OddPredicate());
+			System.out.println("奇数个数为:" + count);
+		}
+	}
+	
+	结果为：
+	奇数个数为:2
+	
+2.以下程序是否可以编译
+	public final class Algorithm {
+		public static <T> T max(T x, T y) {
+			return x > y ? x : y;
+		}
+	}
+A：不可以，>运算符仅适用于原始数据类型
+
+3.编写一种通用方法来交换数组中两个不同元素的位置
+	public final class Algorithm {
+		public static <T> void swap(T[] a, int i, int j) {
+			T temp = a[i];
+			a[i] = a[j];
+			a[j] = temp;
+		}
+	}
+	
+4.如果编译器在编译时擦除所有类型参数，那么为什么要使用泛型
+A：有以下原因：
+		1.Java编译器在编译时对通用代码执行更严格的类型检查；
+		2.泛型支持将编程类型作为参数；
+		3.泛型使您可以实现泛型算法。
+		
+5.类型擦除后，以下类转换为什么
+	public class Pair<K, V> {
+
+		public Pair(K key, V value) {
+			this.key = key;
+			this.value = value;
+		}
+
+		public K getKey(); { return key; }
+		public V getValue(); { return value; }
+
+		public void setKey(K key)     { this.key = key; }
+		public void setValue(V value) { this.value = value; }
+
+		private K key;
+		private V value;
+	}
+A：
+	public class Pair {
+
+		public Pair(Object key, Object value) {
+			this.key = key;
+			this.value = value;
+		}
+
+		public Object getKey()   { return key; }
+		public Object getValue() { return value; }
+
+		public void setKey(Object key)     { this.key = key; }
+		public void setValue(Object value) { this.value = value; }
+
+		private Object key;
+		private Object value;
+	}
+		
+6.类型擦除后，以下方法转换为什么
+	public static <T extends Comparable<T>>
+		int findFirstGreaterThan(T[] at, T elem) {
+		// ...
+	}
+	
+A：
+	public static int findFirstGreaterThan(Comparable[] at, Comparable elem) {
+		// ...
+		}
+		
+7.可以编译以下方法吗？如果不能，为什么
+	public static void print(List<? extends Number> list) {
+		for (Number n : list)
+			System.out.print(n + " ");
+		System.out.println();
+	}
+A：可以编译。
+
+8.编写通用方法以在列表的[begin，end）范围内找到最大元素
+A：
+	import java.util.*;
+
+	public final class Algorithm {
+		public static <T extends Object & Comparable<? super T>>
+			T max(List<? extends T> list, int begin, int end) {
+			T maxElem = list.get(begin);
+			for (++begin; begin < end; ++begin)
+				if (maxElem.compareTo(list.get(begin)) < 0)
+					maxElem = list.get(begin);
+			return maxElem;
+		}
+	}
+	
+9.以下类会编译吗？如果不能，为什么
+	public class Singleton<T> {
+
+		public static T getInstance() {
+			if (instance == null)
+				instance = new Singleton<T>();
+			return instance;
+		}
+		private static T instance = null;
+	}
+	
+A：不能。不能创建类型参数T的静态字段。
+
+10.给定以下类：
+	class Shape { /* ... */ }
+	class Circle extends Shape { /* ... */ }
+	class Rectangle extends Shape { /* ... */ }
+	class Node<T> { /* ... */ }
+	以下代码可以编译吗？如果不能，为什么
+	Node<Circle> nc = new Node<>();
+	Node<Shape>  ns = nc;
+	
+A：否。因为Node <Circle>不是Node <Shape>的子类型
+
+11.考虑此类：
+		class Node<T> implements Comparable<T> {
+		public int compareTo(T obj) { /* ... */ }
+		// ...
+	}
+   以下代码可以编译吗？如果不能，为什么？
+	Node<String> node = new Node<>();
+	Comparable<String> comp = node;
+A：可以编译。
+	
+12.如何调用以下方法在列表中查找相对于指定整数列表而言相对质数的第一个整数
+	public static <T>
+		int findFirst(List<T> list, int begin, int end, UnaryPredicate<T> p)
+   请注意，如果gcd（a，b）= 1，则两个整数a和b是相对质数，其中gcd是最大公约数的缩写
+A：
+	import java.util.*;
+
+	public final class Algorithm {
+
+		public static <T>
+			int findFirst(List<T> list, int begin, int end, UnaryPredicate<T> p) {
+			for (; begin < end; ++begin)
+				if (p.test(list.get(begin)))
+					return begin;
+			return -1;
+		}
+
+		public static int gcd(int x, int y) {
+			for (int r; (r = x % y) != 0; x = y, y = r) { }
+				return y;
+		}
+	}
+	通用UnaryPredicate接口定义如下：
+	public interface UnaryPredicate<T> {
+		public boolean test(T obj);
+	}
+	以下程序测试findFirst方法：	
+	import java.util.*;
+
+	class RelativelyPrimePredicate implements UnaryPredicate<Integer> {
+		public RelativelyPrimePredicate(Collection<Integer> c) {
+			this.c = c;
+		}
+		
+		public boolean test(Integer x) {
+			for (Integer i : c)
+				if (Algorithm.gcd(x, i) != 1)
+					return false;
+			return c.size() > 0;
+		}
+		private Collection<Integer> c;
+	}
+
+	public class Test {
+		public static void main(String[] args) throws Exception {
+
+			List<Integer> li = Arrays.asList(3, 4, 6, 8, 11, 15, 28, 32);
+			Collection<Integer> c = Arrays.asList(7, 18, 19, 25);
+			UnaryPredicate<Integer> p = new RelativelyPrimePredicate(c);
+
+			int i = ALgorithm.findFirst(li, 0, li.size(), p);
+			if (i != -1) {
+				System.out.print(li.get(i));
+				for (Integer k : c)
+					System.out.print(k + " ");
+				System.out.println();
+			}
+		}
+	}
+输出为：
+	11 is relatively prime to 7 18 19 25
+	
+
+
+包：
+Answer：
+1.假设你已经编写了一些课程。随后，你决定将它们分为三个软件包，如下表所示。
+此外，假定这些类当前在默认包中（它们没有任何package语句）。
+		Package Name	Class Name
+		mygame.server	Server
+		mygame.shared	Utilities
+		mygame.client	Client	
+		
+	a.您需要在每个源文件中添加哪一行代码以将每个类放入正确的包中
+	A:
+	Client.java添加package mygame.client;
+	Server.java添加package mygame.server;
+	Utilities.java添加package mygame.shared;
+	
+	b.为了遵守目录结构，您将需要在开发目录中创建一些子目录，并将源文件
+	放在正确的子目录中。您必须创建哪些子目录？每个源文件都进入哪个子目录？
+	A:
+	可在mygame目录中，创建三个子目录：client，server，和shared
+
+	c.您是否认为需要对源文件进行任何其他更改才能使其正确编译？如果是这样，该怎么办？
+	A:
+	通过添加导入实现。
+	import mygame.shared.*;
+	
+
+Exercises：
+1.以下三个源文件
+Client：
+	import java.io.*;
+	import java.net.*;
+	import java.util.*;
+
+	public class Client extends Thread {
+		Socket clientSocket = null;
+		public Client(Socket s) {
+		clientSocket = s;
+		}
+
+		public void run() {
+		if (clientSocket == null) {
+			return;
+		}
+
+		PrintStream out = null;
+		Utilities.printMsg("creating output stream");
+		try {
+			out = new PrintStream(clientSocket.getOutputStream());
+		} catch (IOException e) {
+			System.err.println("Error:" + e); 
+			System.exit(1);
+		}
+		Utilities.printMsg("当前日期");
+
+		Date d = new Date();
+		out.println(d);
+		try {          
+			out.close();
+			clientSocket.close();
+		} catch (IOException e) {
+		}
+		}
+
+		protected void finalize() {
+		if (clientSocket != null) {
+			try {
+			clientSocket.close();
+			} catch (IOException e) {
+			}
+			clientSocket = null;
+		}
+		}  
+	}
+	
+Server：
+	import java.io.*;
+	import java.net.*;
+
+	public class Server {
+
+		public static void main(String args[]) {
+		ServerSocket serverSocket = null;
+
+		Utilities.printMsg("创建服务");
+		
+		try {
+			serverSocket = new ServerSocket(4444);
+		} catch (IOException e) {
+			System.err.println("Error:" + e);
+			System.exit(1);
+		}
+
+		Utilities.printMsg("可与客户端连接。");
+
+		while (true) {
+			try {
+			Socket clientSocket = serverSocket.accept();
+			new Client(clientSocket).start();
+			} catch (IOException e) {
+			System.err.println("无法连接:" + e); 
+			System.exit(1);
+			}
+		}
+		}
+	}
+
+tilities：
+	public class Utilities {
+		final static boolean DEBUG = true;
+
+		public static void printMsg(String msg) {
+		if (DEBUG) {
+			System.out.println(msg);
+			}
+		}
+	}
+
+使用刚刚下载的源文件来实现您在问题1中提出的更改
+A：
+Client：
+	package mygame.client;
+
+	import java.io.*;
+	import java.net.*;
+	import java.util.*;
+
+	import mygame.shared.Utilities;
+
+	public class Client extends Thread {
+		Socket clientSocket = null;
+
+		public Client(Socket s) {
+		clientSocket = s;
+		}
+
+		public void run() {
+		if (clientSocket == null) {
+			return;
+		}
+
+		PrintStream out = null;
+
+		Utilities.printMsg("创建输出");
+
+		try {
+			out = new PrintStream(clientSocket.getOutputStream());
+		} catch (IOException e) {
+			System.err.println("Error:" + e); 
+			System.exit(1);
+		}
+
+		Utilities.printMsg("当前日期");
+
+		Date d = new Date();
+		out.println(d);
+
+		try {          
+			out.close();
+			clientSocket.close();
+		} catch (IOException e) {
+		}
+		}
+
+		protected void finalize() {
+		if (clientSocket != null) {
+			try {
+			clientSocket.close();
+			} catch (IOException e) {
+			}
+			clientSocket = null;
+		}
+		}  
+	}
+	
+Server:
+	package mygame.server;
+
+	import java.io.*;
+	import java.net.*;
+
+	import mygame.client.Client;
+	import mygame.shared.Utilities;
+
+	public class Server {
+
+		public static void main(String args[]) {
+		ServerSocket serverSocket = null;
+
+		Utilities.printMsg("创建服务");
+		
+		try {
+			serverSocket = new ServerSocket(4444);
+		} catch (IOException e) {
+			System.err.println("无法创建服务:" + e);
+			System.exit(1);
+		}
+
+		Utilities.printMsg("接受客户端连接");
+
+		while (true) {
+			try {
+			Socket clientSocket = serverSocket.accept();
+			new Client(clientSocket).start();
+			} catch (IOException e) {
+			System.err.println("无法连接:" + e); 
+			System.exit(1);
+			}
+		}
+		}
+	}
+
+Utilities：
+	package mygame.shared;
+
+	public class Utilities {
+		final static boolean DEBUG = true;
+
+		public static void printMsg(String msg) {
+		if (DEBUG) {
+			System.out.println(msg);
+		}
+		}
+	}
+	
+	
+	
+	
+	
