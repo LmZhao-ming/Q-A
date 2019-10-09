@@ -1,0 +1,265 @@
+数字和字符串：
+Numbers：
+Questions：
+1.使用API​​文档查找以下问题的答案：
+	a.Integer您可以使用什么方法将转换int为以十六进制表示数字的字符串？例如，哪种方法将整数65转换为字符串“41”？
+	A:方法：toHexString();
+
+	b.Integer您将使用哪种方法将以5为基数的字符串转换为等效字符串int？例如，如何将字符串“ 230”转换为整数值65？显示用于完成此任务的代码。
+	A:使用方法valueOf()；
+		String string = "230";
+		int rlt = Integer.valueOf(string, 5);
+		
+	c.您可以使用哪种Double方法检测浮点数是否具有特殊值Not Number（NaN）？
+	A:方法isNaN(); 用于检查其参数是否是非数字值。
+	
+2.以下表达式的值是什么，为什么？
+	Integer.valueOf(1).equals(Long.valueOf(1))
+	A:类型不同，会返回false；
+	
+Exercises：
+1.更改 MaxVariablesDemo为显示最小值而不是最大值。可以删除与变量aChar和相关的所有代码aBoolean。输出是什么？
+	MinVariablesDemo：
+	public class MinVariablesDemo {
+		public static void main(String args[]) {
+
+			byte smallestByte = Byte.MIN_VALUE;
+			short smallestShort = Short.MIN_VALUE;
+			int smallestInteger = Integer.MIN_VALUE;
+			long smallestLong = Long.MIN_VALUE;
+
+			float smallestFloat = Float.MIN_VALUE;
+			double smallestDouble = Double.MIN_VALUE;
+
+			System.out.println("The smallest byte value is " + smallestByte);
+			System.out.println("The smallest short value is " + smallestShort);
+			System.out.println("The smallest integer value is " + smallestInteger);
+			System.out.println("The smallest long value is " + smallestLong);
+			System.out.println("The smallest float value is " + smallestFloat);
+			System.out.println("The smallest double value is " + smallestDouble);
+		}
+	}
+	MaxVariablesDemo：
+	public class MaxVariablesDemo {
+		public static void main(String args[]) {
+
+			byte largestByte = Byte.MAX_VALUE;
+			short largestShort = Short.MAX_VALUE;
+			int largestInteger = Integer.MAX_VALUE;
+			long largestLong = Long.MAX_VALUE;
+
+			float largestFloat = Float.MAX_VALUE;
+			double largestDouble = Double.MAX_VALUE;
+
+			char aChar = 'S';
+			boolean aBoolean = true;
+
+			System.out.println("The largest byte value is "
+							   + largestByte + ".");
+			System.out.println("The largest short value is "
+							   + largestShort + ".");
+			System.out.println("The largest integer value is "
+							   + largestInteger + ".");
+			System.out.println("The largest long value is "
+							   + largestLong + ".");
+
+			System.out.println("The largest float value is "
+							   + largestFloat + ".");
+			System.out.println("The largest double value is "
+							   + largestDouble + ".");
+
+			if (Character.isUpperCase(aChar)) {
+				System.out.println("The character " + aChar
+								   + " is uppercase.");
+			} else {
+				System.out.println("The character " + aChar
+								   + " is lowercase.");
+			}
+			System.out.println("The value of aBoolean is "
+							   + aBoolean + ".");
+		}
+	}
+	输出为：
+	The smallest byte value is -128
+	The smallest short value is -32768
+	The smallest integer value is -2147483648
+	The smallest long value is -9223372036854775808
+	The smallest float value is 1.4E-45
+	The smallest double value is 4.9E-324
+	
+2.写一个程序，该程序从命令行读取不指定数量的整数参数，并将它们加在一起。例如，假设您输入以下内容：
+  java Adder 1 3 2 10
+  该程序应显示16，然后退出。如果用户仅输入一个参数，则程序应显示一条错误消息。
+  A：
+	public class Adder {
+		public static void main(String[] args) {
+		int num = args.length;
+
+			if (num < 2) {
+				System.out.println("输入参数数量不足，请重新输入！");
+			} else {
+			int sum = 0;
+			for (int i = 0; i < num; i++) {
+					sum += Integer.valueOf(args[i]).intValue();
+			}
+				System.out.println(sum);
+			}
+		}
+	}
+	
+3.创建一个与上一个程序相似的程序，但有以下区别：而不是读取整数参数，而是读取浮点参数。它使用小数点
+  右边的两位数字显示参数的总和。例如，假设您输入以下内容：
+  java FPAdder 1 1e2 3.0 4.754   程序将显示108.75.
+	A：
+	import java.text.DecimalFormat;
+
+	public class FPAdder {
+		public static void main(String[] args) {
+
+		int num = args.length;
+
+			if (num < 2) {
+				System.out.println("输入参数数量不足，请重新输入！");
+			} else {
+			double sum = 0.0;
+			for (int i = 0; i < numArgs; i++) {
+					sum += Double.valueOf(args[i]).doubleValue();
+			}
+			DecimalFormat myFormatter = new DecimalFormat("###,###.##");
+			String output = myFormatter.format(sum);
+				System.out.println(output);
+			}
+		}
+	}
+  
+Characters and Strings：
+Questions：
+1.以下字符串生成器的初始容量是多少？
+	StringBuilder sb = new StringBuilder("Able was I ere I saw Elba.");
+	A：初始字符串长度加16，为42
+	
+2.思考以下字符串：
+	String hannah = "Did Hannah see bees? Hannah did.";
+	
+	a.hannah.length()为多少
+	A：32
+	
+	b.hannah.charAt(12)显示什么
+	A：显示为e
+	
+	c.编写一个表达式，该表达式引用hannah所引用的字符串中的字母b。
+	A:hannah.charAt(15).
+	
+3.下面代码的返回的是什么
+	"Was it a car or a cat I saw?".substring(9, 12)
+	A：返回为：car
+	
+4.下面程序的执行结果是什么
+	public class ComputeResult {
+		public static void main(String[] args) {
+			String original = "software";
+			StringBuilder result = new StringBuilder("hi");
+			int index = original.indexOf('a');
+
+			result.setCharAt(0, original.charAt(0));
+			result.setCharAt(1, original.charAt(original.length()-1));
+			result.insert(1, original.charAt(4));
+			result.append(original.substring(1,4));
+			result.insert(3, (original.substring(index, index+2) + " ")); 
+
+			System.out.println(result);
+		}
+	}	
+	A：结果如下：
+		si
+		se
+		swe
+		sweoft
+		swear oft
+	
+Exercises：
+
+1.通过两种方法将以下两个字符串连接在一起且字符串为"Hi, mom."：
+	String hi = "Hi, ";
+	String mom = "mom.";
+	A：方法如下：
+	hi.concat(mom)     hi + mom.
+	
+2.编写一个程序，使用您的全名来计算您的姓名首字母并将其显示出来。
+	A：
+	public class ComputeInitials {
+		public static void main(String[] args) {
+			String myName = "Liming Zhao";
+			StringBuffer myInitials = new StringBuffer();
+			int length = myName.length();
+
+			for (int i = 0; i < length; i++) {
+				if (Character.isUpperCase(myName.charAt(i))) {
+					myInitials.append(myName.charAt(i));
+				}
+			}
+			System.out.println("My initials are: " + myInitials);
+		}
+	}
+	
+3.字谜是通过换位另一个单词或短语的字母而得到的单词或短语；编写一个程序，
+弄清楚一个字符串是否是另一个字符串的字谜。该程序应忽略空格和标点符号。
+A：
+	public class Anagram {
+
+		public static boolean areAnagrams(String string1,String string2) {
+
+			String workingCopy1 = removeJunk(string1);
+			String workingCopy2 = removeJunk(string2);
+
+			workingCopy1 = workingCopy1.toLowerCase();
+			workingCopy2 = workingCopy2.toLowerCase();
+
+			workingCopy1 = sort(workingCopy1);
+			workingCopy2 = sort(workingCopy2);
+
+			return workingCopy1.equals(workingCopy2);
+		}
+
+		protected static String removeJunk(String string) {
+			int i, len = string.length();
+			StringBuilder dest = new StringBuilder(len);
+			char c;
+
+			for (i = (len - 1); i >= 0; i--) {
+				c = string.charAt(i);
+				if (Character.isLetter(c)) {
+					dest.append(c);
+				}
+			}
+
+			return dest.toString();
+		}
+
+		protected static String sort(String string) {
+			char[] charArray = string.toCharArray();
+
+			java.util.Arrays.sort(charArray);
+
+			return new String(charArray);
+		}
+
+		public static void main(String[] args) {
+			String string1 = "Cosmo and Laine:";
+			String string2 = "Maid, clean soon!";
+
+			System.out.println("-----------------");
+			System.out.println("测试以下字符串是否为字谜:");
+			System.out.println("String 1: " + string1);
+			System.out.println("String 2: " + string2);
+			System.out.println("-----------------");
+
+			if (areAnagrams(string1, string2)) {
+				System.out.println("是字谜！!");
+			} else {
+				System.out.println("不是字谜！");
+			}
+			System.out.println();
+		}
+	}
+	
