@@ -18,7 +18,7 @@ A：
 		public boolean test(T obj);
 	}
 	
-	对整数列表中的奇数整数进行计数：
+	a.对整数列表中的奇数整数进行计数：
 	
 	import java.util.*;
 
@@ -36,6 +36,83 @@ A：
 	
 	结果为：
 	奇数个数为:2
+	
+	b.对整数列表中的质数进行计数：
+	方法一：
+	import java.util.*;
+	
+	class OddPredicate implements UnaryPredicate<Integer> {
+	//偶数不可能为质数，大于2的数，如果数a大于数b的一半，则b不可能被a整除
+		public boolean test(Integer i) { 
+			if (i == 2) {
+            return true;
+        }
+			// 识别小于2的数和偶数
+			if (i < 2 || i % 2 == 0) {
+				return false;
+			}
+			int max = i / 2;
+			for (int n = 3; n < max; n += 2) {
+				if (i % n == 0) {
+					return false;
+				}
+			}
+			return true;
+		}
+	}
+	
+	public class Test {
+		public static void main(String[] args) {
+			Collection<Integer> c = Arrays.asList(1, 2, 3, 4);
+			int count = Algorithm.countIf(c, new OddPredicate());
+			System.out.println("质数个数为:" + count);
+		}
+	}
+	
+	方法二：
+	import java.util.*;
+
+	class OddPredicate implements UnaryPredicate<Integer> {
+	//java中BigInteger中含有判断一个整数是否为质数的方法
+		public boolean test(Integer i) { 
+			BigInteger integer = BigInteger.valueOf(i);
+			return integer.isProbablePrime(1);
+		}
+	}
+	
+	public class Test {
+		public static void main(String[] args) {
+			Collection<Integer> c = Arrays.asList(1, 2, 3, 4);
+			int count = Algorithm.countIf(c, new OddPredicate());
+			System.out.println("质数个数为:" + count);
+		}
+	}
+
+	c.对整数列表中的回文数进行计数：
+	import java.util.*;
+
+	class OddPredicate implements UnaryPredicate<Integer> {
+		public boolean test(int i) {
+			if(i < 0 || (i % 10 == 0 && i != 0)){
+				return false;
+			}
+			int num = 0;//num 为方向值
+			while(i > num){
+				num = num * 10 + i % 10;
+				i / = 10;
+			}
+			return i == num || i == num/10;
+		}
+	}
+	
+	public class Test {
+		public static void main(String[] args) {
+			Collection<Integer> c = Arrays.asList(1, 2, 3, 4);
+			int count = Algorithm.countIf(c, new OddPredicate());
+			System.out.println("回文数个数为:" + count);
+		}
+	}
+
 	
 2.以下程序是否可以编译
 	public final class Algorithm {
@@ -68,8 +145,8 @@ A：有以下原因：
 			this.value = value;
 		}
 
-		public K getKey(); { return key; }
-		public V getValue(); { return value; }
+		public K getKey() { return key; }
+		public V getValue() { return value; }
 
 		public void setKey(K key)     { this.key = key; }
 		public void setValue(V value) { this.value = value; }
@@ -140,7 +217,7 @@ A：
 		private static T instance = null;
 	}
 	
-A：不能。不能创建类型参数T的静态字段。
+A：不可编译。不能创建类型参数T的静态字段。
 
 10.给定以下类：
 	class Shape { /* ... */ }
@@ -151,7 +228,7 @@ A：不能。不能创建类型参数T的静态字段。
 	Node<Circle> nc = new Node<>();
 	Node<Shape>  ns = nc;
 	
-A：否。因为Node <Circle>不是Node <Shape>的子类型
+A：不可编译。因为节点Node <Circle>不是节点Node <Shape>的子类型
 
 11.考虑此类：
 		class Node<T> implements Comparable<T> {
@@ -185,10 +262,12 @@ A：
 				return y;
 		}
 	}
+	
 	通用UnaryPredicate接口定义如下：
 	public interface UnaryPredicate<T> {
 		public boolean test(T obj);
 	}
+	
 	以下程序测试findFirst方法：	
 	import java.util.*;
 
@@ -223,7 +302,7 @@ A：
 		}
 	}
 输出为：
-	11 is relatively prime to 7 18 19 25
+	11 相对于 7 18 19 25 为质数。
 	
 
 
@@ -359,45 +438,45 @@ Client：
 		Socket clientSocket = null;
 
 		public Client(Socket s) {
-		clientSocket = s;
+			clientSocket = s;
 		}
 
 		public void run() {
-		if (clientSocket == null) {
-			return;
-		}
+			if (clientSocket == null) {
+				return;
+			}
 
-		PrintStream out = null;
+			PrintStream out = null;
 
-		Utilities.printMsg("创建输出");
+			Utilities.printMsg("创建输出");
 
-		try {
-			out = new PrintStream(clientSocket.getOutputStream());
-		} catch (IOException e) {
-			System.err.println("Error:" + e); 
-			System.exit(1);
-		}
+			try {
+				out = new PrintStream(clientSocket.getOutputStream());
+			} catch (IOException e) {
+				System.err.println("Error:" + e); 
+				System.exit(1);
+			}
 
-		Utilities.printMsg("当前日期");
+			Utilities.printMsg("当前日期");
 
-		Date d = new Date();
-		out.println(d);
+			Date d = new Date();
+			out.println(d);
 
-		try {          
-			out.close();
-			clientSocket.close();
-		} catch (IOException e) {
-		}
+			try {          
+				out.close();
+				clientSocket.close();
+			} catch (IOException e) {
+			}
 		}
 
 		protected void finalize() {
-		if (clientSocket != null) {
-			try {
-			clientSocket.close();
-			} catch (IOException e) {
+			if (clientSocket != null) {
+				try {
+					clientSocket.close();
+				} catch (IOException e) {
+				}
+				clientSocket = null;
 			}
-			clientSocket = null;
-		}
 		}  
 	}
 	
@@ -413,28 +492,28 @@ Server:
 	public class Server {
 
 		public static void main(String args[]) {
-		ServerSocket serverSocket = null;
+			ServerSocket serverSocket = null;
 
-		Utilities.printMsg("创建服务");
-		
-		try {
-			serverSocket = new ServerSocket(4444);
-		} catch (IOException e) {
-			System.err.println("无法创建服务:" + e);
-			System.exit(1);
-		}
-
-		Utilities.printMsg("接受客户端连接");
-
-		while (true) {
+			Utilities.printMsg("创建服务");
+			
 			try {
-			Socket clientSocket = serverSocket.accept();
-			new Client(clientSocket).start();
+				serverSocket = new ServerSocket(4444);
 			} catch (IOException e) {
-			System.err.println("无法连接:" + e); 
-			System.exit(1);
+				System.err.println("无法创建服务:" + e);
+				System.exit(1);
 			}
-		}
+
+			Utilities.printMsg("接受客户端连接");
+
+			while (true) {
+				try {
+					Socket clientSocket = serverSocket.accept();
+					new Client(clientSocket).start();
+				} catch (IOException e) {
+					System.err.println("无法连接:" + e); 
+					System.exit(1);
+				}
+			}
 		}
 	}
 
@@ -445,9 +524,9 @@ Utilities：
 		final static boolean DEBUG = true;
 
 		public static void printMsg(String msg) {
-		if (DEBUG) {
-			System.out.println(msg);
-		}
+			if (DEBUG) {
+				System.out.println(msg);
+			}
 		}
 	}
 	
