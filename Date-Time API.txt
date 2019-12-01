@@ -1,0 +1,300 @@
+Questions and Exercises: Date-Time API
+
+Questions：
+
+1.您将使用哪一类年，月，日，秒和纳秒来存储你的生日？
+A：可以使用LocalDataTime类或者ZonedDateTime类。java.time 包下有两个比较重要的API：
+	Local(本地) − 简化了日期时间的处理，没有时区的问题。
+	Zoned(时区) − 通过制定的时区处理日期时间。
+常用到的较重要的对象如下：
+	ZoneId: 时区ID，用来确定Instant和LocalDateTime互相转换的规则
+	Instant: 用来表示时间线上的一个点（瞬时）
+	LocalDate: 表示没有时区的日期, LocalDate是不可变并且线程安全的
+	LocalTime: 表示没有时区的时间, LocalTime是不可变并且线程安全的
+	LocalDateTime: 表示没有时区的日期时间, LocalDateTime是不可变并且线程安全的
+	Clock: 用于访问当前时刻、日期、时间，用到时区
+	Duration: 用秒和纳秒表示时间的数量（长短），用于计算两个日期的“时间”间隔
+	Period: 用于计算两个“日期”间隔
+
+2.给定一个随机日期，您将如何找到上一个星期四的日期？
+A：可以通过TemporalAdjuster接口实现复杂的日期操作。	previous(DayOfWeek dayOfWeek)方法可以用于返回前一个星期几。
+
+3. ZoneId和ZoneOffset有什么区别？
+A：java.time.ZoneId类表示时区ID，例如Europe/Paris
+   java.time.ZoneOffset类表示格林威治/UTC的时区偏移量，例如+02:00.
+
+4.如何将Instant转换为ZonedDateTime？如何转换ZonedDateTime到Instant？
+A：将Instant转换为ZonedDateTime：
+InstantZonedDateTime.Java
+
+	import java.time.Instant;
+	import java.time.ZoneId;
+	import java.time.ZonedDateTime;
+
+	public class InstantZonedDateTime {
+		public static void main(String[] args) {
+			Instant instant = Instant.now();
+			System.out.println("Instant : " + instant);
+			ZonedDateTime AdenTime = instant.atZone(ZoneId.of("Asia/Aden"));
+			System.out.println("OffSet : " + AdenTime.getOffset());
+		}
+	}
+
+ZonedDateTimeInstant.Java
+
+	import java.time.ZoneId;
+	import java.time.ZonedDateTime;
+
+	public class ZonedDateTimeInstant {
+		public static void main(String[] args) {
+			ZonedDateTime now = ZonedDateTime.now(ZoneId.of("Asia/Aden"));
+			System.out.println(now);
+			System.out.println(now.toInstant());
+		}
+	}	
+
+Exercises：
+
+1.编写一个示例，该示例针对给定年份报告该年内每个月的时长。
+Calendar.Java
+	import java.util.Scanner;
+
+	public class Calendar {
+		public static void main(String[] args) {
+			Scanner input=new Scanner(System.in);
+			System.out.println("请输入当前年份：");
+			int year=input.nextInt();
+			System.out.println("p请输入当前月份：");
+			int month=input.nextInt();
+			printMonth( year, month);
+		}
+		public static void printMonth(int year,int month) {
+			printMonthTitle(year,month);
+			printMonthBody(year,month);
+		}
+		public static void printMonthTitle(int year,int month) {
+			System.out.println("          "+getMonthName(month)+" "+year);
+			System.out.println("-----------------------------------------");
+			System.out.println("  Sun Mon Tue Wed Thu Fri Sat");
+		}
+		public static String getMonthName(int month){
+			String MonthName="";
+			if(month>12||month<1){
+				System.out.println("输入有误，请重新输入。");
+				System.exit(1);
+			}
+			switch (month) {
+				case 1: MonthName = "January";  break;
+				case 2: MonthName = "February"; break;
+				case 3: MonthName = "March";    break;
+				case 4: MonthName = "April";    break;
+				case 5: MonthName = "May";      break;
+				case 6: MonthName = "June";     break;
+				case 7: MonthName = "July";     break;
+				case 8: MonthName = "August";   break;
+				case 9: MonthName = "September";break;
+				case 10: MonthName = "October"; break;
+				case 11: MonthName = "November";break;
+				case 12: MonthName = "December";break;
+			}
+			return MonthName;
+		}
+		public static void printMonthBody(int year,int month) {
+			int startDay=getStarDay(year,month);
+			int i=0;
+			for(i=0;i<startDay;i++)
+				System.out.printf("    ");
+			int numberOfDaysInMonth = getNumberOfDayInMonth(year,month);
+
+			for(i=1;i<=numberOfDaysInMonth;i++){
+				System.out.printf("%4d",i);
+				if((i+startDay)%7==0)
+					System.out.println();
+			}
+		}
+
+
+		public static int getStarDay(int year, int month) {
+			final int START_DAY_FOR_JAN_1_1800=2;
+			int totalNumberOfDays=getTotalNumberOfDays(year,month);
+
+			return (totalNumberOfDays+START_DAY_FOR_JAN_1_1800)%7;
+		}
+		public static int getTotalNumberOfDays(int year, int month) {
+			int total = 0;
+			for(int i=1800;i<year;i++){
+				if(isLeapYear(i))
+					total+=366;
+				else
+					total+=365;
+			}
+			for(int i=1;i<month;i++){
+				total+=getNumberOfDayInMonth(year, i);
+			}
+			return total;
+		}
+		public static boolean isLeapYear(int year) {
+
+			return year%400==0||(year%4==0&&year%100!=0);
+		}
+		public static int getNumberOfDayInMonth(int year, int month) {
+			if(month==1||month==3||month==5||month==7||month==8||month==10||month==12)
+				return 31;
+			if(month==4||month==6||month==9||month==11)
+				return 30;
+			if(month==2){
+				if(isLeapYear( year)){
+					return 28;
+				}else{
+					return 29;
+				}
+			}
+			return 0;
+		}
+	}
+
+输出：
+	请输入当前年份：
+	2019
+	p请输入当前月份：
+	12
+			  December 2019
+	-----------------------------------------
+		  Sun Mon Tue Wed Thu Fri Sat
+		   1   2   3   4   5   6   7
+		   8   9  10  11  12  13  14
+		  15  16  17  18  19  20  21
+		  22  23  24  25  26  27  28
+		  29  30  31
+
+2.编写一个示例，该示例针对当年的给定月份列出该月的所有星期一。
+
+Monday.Java
+
+	import java.text.ParseException;
+	import java.text.SimpleDateFormat;
+	import java.util.ArrayList;
+	import java.util.Calendar;
+	import java.util.Date;
+	import java.util.List;
+
+	public class Monday {
+		public static void main(String[] args) {
+			getDates("2019-12-01", "2020-01-01", "星期一");
+		}
+
+		public static String[] getDates(String dateFrom, String dateEnd, String weekDays) {
+			long time = 1l;
+			long perDayMilSec = 24 * 60 * 60 * 1000;
+			List<String> dateList = new ArrayList<String>();
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			//需要查询的星期系数
+			String strWeekNumber = weekForNum(weekDays);
+			try {
+				dateFrom = sdf.format(sdf.parse(dateFrom).getTime() - perDayMilSec);
+				while (true) {
+					time = sdf.parse(dateFrom).getTime();
+					time = time + perDayMilSec;
+					Date date = new Date(time);
+					dateFrom = sdf.format(date);
+					if (dateFrom.compareTo(dateEnd) <= 0) {
+						Integer weekDay = dayForWeek(date);
+						if (strWeekNumber.indexOf(weekDay.toString()) != -1) {
+							System.out.println(dateFrom);
+							dateList.add(dateFrom);
+						}
+					} else {
+						break;
+					}
+				}
+			} catch (ParseException e1) {
+				e1.printStackTrace();
+			}
+			String[] dateArray = new String[dateList.size()];
+			dateList.toArray(dateArray);
+			return dateArray;
+		}
+
+		public static Integer dayForWeek(Date date) {
+			Calendar calendar = Calendar.getInstance();
+			calendar.setTime(date);
+			return calendar.get(Calendar.DAY_OF_WEEK);
+		}
+
+		public static String weekForNum(String weekDays) {
+			String weekNumber = "";
+			//解析传入的星期
+			if (weekDays.indexOf("|") != -1) {//多个星期数
+				String[] strWeeks = weekDays.split("\\|");
+				for (int i = 0; i < strWeeks.length; i++) {
+					weekNumber = weekNumber + "" + getWeekNum(strWeeks[i]).toString();
+				}
+			} else {
+				weekNumber = getWeekNum(weekDays).toString();
+			}
+
+			return weekNumber;
+
+		}
+
+		public static Integer getWeekNum(String strWeek) {
+			Integer number = 1;
+			if ("星期日".equals(strWeek)) {
+				number = 1;
+			} else if ("星期一".equals(strWeek)) {
+				number = 2;
+			} else if ("星期二".equals(strWeek)) {
+				number = 3;
+			} else if ("星期三".equals(strWeek)) {
+				number = 4;
+			} else if ("星期四".equals(strWeek)) {
+				number = 5;
+			} else if ("星期五".equals(strWeek)) {
+				number = 6;
+			} else if ("星期六".equals(strWeek)) {
+				number = 7;
+			} else {
+				number = 1;
+			}
+			return number;
+		}
+
+	}
+
+输出：
+	2019-12-02
+	2019-12-09
+	2019-12-16
+	2019-12-23
+	2019-12-30
+
+3.编写一个示例，测试13号星期五。
+Friday.Java
+	import java.text.Format;
+	import java.text.SimpleDateFormat;
+	import java.util.Calendar;
+
+	public class Friday {
+
+		public static void main(String[] args) {
+			Format f = new SimpleDateFormat("yyyy-MM-dd");
+			boolean flg = false;
+			Calendar c = Calendar.getInstance();
+			int year = 2019;
+			c.set(Calendar.YEAR, year);
+			for (int i = Calendar.JANUARY; i <= Calendar.DECEMBER; i++) {
+				c.set(Calendar.MONTH, i);
+				c.set(Calendar.DAY_OF_MONTH, 13);
+				if (c.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY) {
+					System.out.println(f.format(c.getTime()));
+					flg = true;
+				}
+			}
+			if (!flg) {
+				System.out.println(year + "年没有黑色星期五.");
+			}
+		}
+	}
+输出：
+	2019-09-13
+	2019-12-13
